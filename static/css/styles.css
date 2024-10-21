@@ -24,3 +24,38 @@ body {
     background-color: #333;
     color: #fff;
 }
+
+.logo {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+} 
+
+.regt {
+    color: #fff;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif
+}
+
+.reg {
+    color: #fff;  
+}
+
+
+.img-thumbnail {
+    width: 100%;      /* Set the width to 100% of the card */
+    height: 200px;    /* Set a fixed height */
+    object-fit:cover; /* Ensures the image covers the space without distortion */
+}
+
+.pro-thumbnail {
+    width: 150px;
+    height:150px;
+    object-fit:cover;
+    border-left: 1.75px solid #b9bdbb;
+    border-top: 1.75px solid  #b9bdbb;
+    border-bottom: 1.75px solid #b9bdbb;
+    border-right: 1.75px solid #b9bdbb;
+    background-color: rgba(0, 0, 0,0.5);
+}
+
+.sell{
+    color: #fff;
+}

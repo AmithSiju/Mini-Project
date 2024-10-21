@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body class="bg-dark text-white">
+    <!-- Only display navbar if not on login or register page -->
+    {% if request.endpoint != 'login' and request.endpoint != 'register' %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-black">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('home') }}">Photo Galleria</a>
@@ -18,16 +20,16 @@
                 <ul class="navbar-nav ms-auto">
                     {% if session['username'] %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('buy') }}">Buy</a>
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('sell') }}">Sell</a>
+                        <a class="nav-link" href="{{ url_for('buy') }}">Purchase</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}">{{ session['username'] }}</a>
+                        <a class="nav-link" href="{{ url_for('sell') }}">Upload</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        <a class="nav-link btn btn-danger text-white" href="{{ url_for('logout') }}">Logout</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
@@ -41,6 +43,8 @@
             </div>
         </div>
     </nav>
+    {% endif %}
+    
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
