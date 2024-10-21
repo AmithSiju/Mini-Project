@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Buy Photographs</h1>
+    <div class="row">
+        {% for photo in photos %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm bg-black text-white">
+                <!-- Display the uploaded image -->
+                <img src="{{ url_for('static', filename='images/items/' + photo.selling_img) }}" class="card-img-top" alt="{{ photo.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ photo.title }}</h5>
+                    <p class="card-text">Genre: {{ photo.genre }}</p>
+                    <p class="card-text">Price: ${{ photo.price }}</p>
+                    <p class="card-text">Uploaded by: {{ photo.uploader_name }}</p> <!-- Uploader's name fetched using user_id -->
+                    <button class="btn btn-light">Buy</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

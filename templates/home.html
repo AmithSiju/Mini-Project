@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Welcome, {{ username }}!</h1>
+    <img src="{{ url_for('static', filename='images/profile/' + user.profile_pic) }}" alt="Profile Picture" class="img-thumbnail" width="150">
+    <a class="btn btn-light" href="{{ url_for('buy') }}">Go to Buy Page</a>
+    <a class="btn btn-light" href="{{ url_for('sell') }}">Go to Sell Page</a>
+{% endblock %}
