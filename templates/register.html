@@ -1,24 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Register</h1>
-    <form method="POST" action="{{ url_for('register') }}" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" required>
+    <div class="container h-100 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card p-4 col-md-4">
+        <center><h3 class="regt">Register - Photo Galleria</h3></center>
+            <form method="POST" action="{{ url_for('register') }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile_pic">Profile Picture</label>
+                    <input type="file" id="profile_pic" name="profile_pic" class="form-control" required>
+                </div>
+                <br>
+                <center><button type="submit" class="btn btn-primary btn-block">Register</button></center>
+            </form><br>
+            <center><p class="reg">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p></center>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="alert alert-danger mt-2">
+                  {% for message in messages %}
+                    {{ message }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
         </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" required>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" name="password" required>
-        </div>
-        <div class="mb-3">
-            <label for="profile_pic" class="form-label">Profile Picture</label>
-            <input type="file" class="form-control" name="profile_pic" required>
-        </div>
-        <button type="submit" class="btn btn-light">Register</button>
-    </form>
+    </div>
 {% endblock %}
