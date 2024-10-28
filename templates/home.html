@@ -1,8 +1,205 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Welcome, {{ username }}!</h1>
-    <img src="{{ url_for('static', filename='images/profile/' + user.profile_pic) }}" alt="Profile Picture" class="img-thumbnail" width="150">
-    <a class="btn btn-light" href="{{ url_for('buy') }}">Go to Buy Page</a>
-    <a class="btn btn-light" href="{{ url_for('sell') }}">Go to Sell Page</a>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="col-md-2 d-none d-md-block bg-secondary sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active sell" href="#">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link sell" href="{{ url_for('buy') }}">
+                            Buy Page
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link sell" href="{{ url_for('sell') }}">
+                            Sell Page
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link sell" href="{{ url_for('logout') }}">
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Welcome, {{ username }}!</h1>
+            </div>
+
+            <!-- User Info Section -->
+            <section class="about">
+                <div class="card p-3">
+                    <div class="row">
+                        <!-- Profile Picture -->
+                        <div class="col-md-3">
+                            <img src="{{ url_for('static', filename='images/profile/' + user.profile_pic) }}" alt="Profile Picture" class="img-thumbnail" width="150">
+                        </div>
+
+                           <!-- Bio Section -->
+                        <div class="col-md-9 sell">
+                            <h5>{{ username }}</h5>
+                            <p class="sell">About me</p>
+
+                            <!-- Display Bio Text -->
+                            <p id="bio-display">{{ user.bio or 'No bio available.' }}</p>
+
+                            <!-- Editable Bio Form (Hidden by Default) -->
+                            <form method="POST" action="{{ url_for('update_bio') }}" id="bio-form" style="display: none;">
+                                <div class="form-group">
+                                    <textarea class="form-control" name="bio" rows="4">{{ user.bio or 'Enter your bio here...' }}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-sm mt-2">Save Bio</button>
+                            </form>
+
+                            <!-- Edit Bio Button -->
+                            <button class="btn btn-secondary btn-sm mt-2" id="edit-bio-btn" onclick="toggleBioEdit()"><img src="{{ url_for('static', filename='images/edit.png') }}" alt="Logout Icon" style="width: 15px; height: 15px;margin-top: -2.75px"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Uploaded Images Section -->
+<div class="mt-4">
+    <h2>Your Uploaded Images:</h2>
+    <div class="row">
+        {% for photo in photos %}
+        <div class="col-md-4 photo-item mb-4">
+            <div class="card dis">
+                <div class="image-container">
+                    <img class="card-img-top" src="{{ url_for('static', filename='images/items/' + photo['selling_img']) }}" alt="Uploaded Image">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ photo['title'] }}</h5>
+                    <p class="card-text">Genre: {{ photo['genre'] }}</p>
+                    <p class="card-text">Price: ${{ photo['price'] }}</p>
+                    
+                    <!-- Edit Button to toggle the form -->
+                    <button class="btn btn-sm btn-secondary mt-2" onclick="toggleEditForm({{ photo['photo_id'] }})"><img src="{{ url_for('static', filename='images/edit.png') }}" alt="Logout Icon" style="width: 15px; height: 15px; margin-top: -2.75px">
+                    </button>
+
+                    <!-- Delete Button with Confirmation -->
+                    <form method="POST" action="{{ url_for('delete_photo', photo_id=photo['photo_id']) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-sm btn-danger mt-2" onclick="return confirmDelete();"><img src="{{ url_for('static', filename='images/delete.png') }}" alt="Logout Icon" style="width: 15px; height: 15px; margin-top: -2.75px"></button>
+                    </form>
+                    
+                    <!-- Edit Form (Hidden by Default) -->
+                    <form method="POST" action="{{ url_for('update_photo', photo_id=photo['photo_id']) }}" class="edit-form mt-3" id="edit-form-{{ photo['photo_id'] }}" style="display: none;">
+                        <div class="form-group">
+                            <label for="title-{{ photo['photo_id'] }}">Title</label>
+                            <input type="text" class="form-control" name="title" id="title-{{ photo['photo_id'] }}" value="{{ photo['title'] }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="genre-{{ photo['photo_id'] }}">Genre</label>
+                            <select id="filterGenre" class="form-control" name="genre" required>
+                                <option value="">Choose Photo Genre</option>
+                                <option value="Abstract Photography">Abstract Photography</option>
+                                <option value="Aerial Photography">Aerial Photography</option>
+                                <option value="Architectural Photography">Architectural Photography</option>
+                                <option value="Astrophotography">Astrophotography</option>
+                                <option value="Black and White Photography">Black and White Photography</option>
+                                <option value="Conceptual Photography">Conceptual Photography</option>
+                                <option value="Documentary Photography">Documentary Photography</option>
+                                <option value="Editorial Photography">Editorial Photography</option>
+                                <option value="Event Photography">Event Photography</option>
+                                <option value="Fashion Photography">Fashion Photography</option>
+                                <option value="Fine Art Photography">Fine Art Photography</option>
+                                <option value="Food Photography">Food Photography</option>
+                                <option value="Geometric Photography">Geometric Photography</option>
+                                <option value="High-Key Photography">High-Key Photography</option>
+                                <option value="Landscape Photography">Landscape Photography</option>
+                                <option value="Long Exposure Photography">Long Exposure Photography</option>
+                                <option value="Low-Key Photography">Low-Key Photography</option>
+                                <option value="Macro Photography">Macro Photography</option>
+                                <option value="Minimalist Photography">Minimalist Photography</option>
+                                <option value="Monochrome Photography">Monochrome Photography</option>
+                                <option value="Negative Space Photography">Negative Space Photography</option>
+                                <option value="Portrait Photography">Portrait Photography</option>
+                                <option value="Product Photography">Product Photography</option>
+                                <option value="Reflections Photography">Reflections Photography</option>
+                                <option value="Shadow Photography">Shadow Photography</option>
+                                <option value="Silhouette Photography">Silhouette Photography</option>
+                                <option value="Sports Photography">Sports Photography</option>
+                                <option value="Still Life Photography">Still Life Photography</option>
+                                <option value="Street Photography">Street Photography</option>
+                                <option value="Symmetry Photography">Symmetry Photography</option>
+                                <option value="Texture Photography">Texture Photography</option>
+                                <option value="Travel Photography">Travel Photography</option>
+                                <option value="Underwater Photography">Underwater Photography</option>
+                                <option value="Wildlife Photography">Wildlife Photography</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="price-{{ photo['photo_id'] }}">Price</label>
+                            <input type="text" class="form-control" name="price" id="price-{{ photo['photo_id'] }}" value="{{ photo['price'] }}">
+                        </div>
+                        <br><button type="submit" class="btn btn-success btn-sm">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p>No images uploaded yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script>
+// Script to Toggle Edit Forms
+    function toggleEditForm(photoId) {
+        var form = document.getElementById("edit-form-" + photoId);
+        if (form.style.display === "none") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+
+// JavaScript for Toggle Edit Form and Confirm Delete 
+
+    function toggleEditForm(photoId) {
+        var form = document.getElementById("edit-form-" + photoId);
+        if (form.style.display === "none") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this item?");
+    }
+// JavaScript to Toggle Bio Edit Mode
+    function toggleBioEdit() {
+        var bioDisplay = document.getElementById("bio-display");
+        var bioForm = document.getElementById("bio-form");
+        var editButton = document.getElementById("edit-bio-btn");
+
+        // Toggle between display and edit mode
+        if (bioForm.style.display === "none") {
+            bioDisplay.style.display = "none";
+            bioForm.style.display = "block";
+            editButton.style.display = "none";
+        } else {
+            bioDisplay.style.display = "block";
+            bioForm.style.display = "none";
+            editButton.style.display = "block";
+        }
+    }
+</script>
+
+            </section>
+        </main>
+    </div>
+</div>
 {% endblock %}

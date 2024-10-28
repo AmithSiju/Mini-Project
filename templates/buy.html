@@ -2,63 +2,65 @@
 
 {% block content %}
     <h1>Buy Photographs</h1>
-    <div class="row">
+    
+    <!-- Search and Filter Section -->
+    <form method="GET" action="{{ url_for('buy') }}">
+        <div class="row mb-4 align-items-center">
+            <!-- Search Box -->
+            <div class="col-md-4">
+                <input type="text" id="searchBox" name="search" class="form-control" placeholder="Search by title or uploader..." value="{{ request.args.get('search', '') }}">
+            </div>
+    
+            <!-- Genre Filter -->
+            <div class="col-md-3">
+                <select id="filterGenre" class="form-control" name="genre">
+                    <option value="">Filter by Genre</option>
+                    {% for genre in genres %}
+                    <option value="{{ genre }}" {% if request.args.get('genre') == genre %} selected {% endif %}>{{ genre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+    
+            <!-- Price Filter -->
+            <div class="col-md-3">
+                <select id="filterPrice" class="form-control" name="price">
+                    <option value="">Filter by Price</option>
+                    <option value="low" {% if request.args.get('price') == 'low' %} selected {% endif %}>Low to High</option>
+                    <option value="high" {% if request.args.get('price') == 'high' %} selected {% endif %}>High to Low</option>
+                </select>
+            </div>
+    
+            <!-- Apply Filters Button with Image -->
+            <div class="col-md-2 text-right">
+                <button type="submit" class="btn btn-secondary">
+                    <img src="{{ url_for('static', filename='images/search.png') }}" alt="Apply Filters" style="width: 24px; height: 24px;">
+                </button>
+            </div>
+        </div>
+    </form>
+    
+    
+
+    <!-- Display Photographs -->
+    <div class="row" id="photoGrid">
         {% for photo in photos %}
-        <div class="col-md-4">
+        <div class="col-md-4 photo-item" 
+             data-title="{{ photo.title }}" 
+             data-uploader="{{ photo.uploader_name }}" 
+             data-genre="{{ photo.genre }}" 
+             data-price="{{ photo.price }}">
             <div class="card mb-4 shadow-sm bg-black text-white">
-                <!-- Display the uploaded image -->
-                <img 
-                    src="{{ url_for('static', filename='images/items/' + photo.selling_img) }}" 
-                    class="card-img-top img-thumbnail" 
-                    alt="{{ photo.title }}" 
-                    data-toggle="modal" 
-                    data-target="#imageModal" 
-                    data-img="{{ url_for('static', filename='images/items/' + photo.selling_img) }}" 
-                    data-title="{{ photo.title }}"
-                    style="cursor: pointer;" 
-                >
+                <img src="{{ url_for('static', filename='images/items/' + photo.selling_img) }}" class="card-img-top img-thumbnail" alt="{{ photo.title }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ photo.title }}</h5>
                     <p class="card-text">Genre: {{ photo.genre }}</p>
                     <p class="card-text">Price: ${{ photo.price }}</p>
                     <p class="card-text">Uploaded by: {{ photo.uploader_name }}</p>
-                    <button class="btn btn-light">Buy</button>
+                    <button class="btn btn-secondary">Buy</button>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content bg-black text-white">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <img id="modalImage" src="" alt="" class="img-fluid">
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
 
-<!-- Add jQuery and Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<!-- Script to handle image click -->
-<script>
-    $(document).ready(function() {
-        $('img[data-toggle="modal"]').on('click', function() {
-            var imgSrc = $(this).data('img');
-            var imgTitle = $(this).data('title');
-            $('#modalImage').attr('src', imgSrc);
-            $('#imageModalLabel').text(imgTitle);
-        });
-    });
-</script>
