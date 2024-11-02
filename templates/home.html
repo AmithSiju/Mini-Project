@@ -8,31 +8,31 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active sell" href="#">
-                            Dashboard
+                        <a class="nav-link active sell" href="#about" >
+                            About
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link sell" href="{{ url_for('buy') }}">
-                            Buy Page
+                        <a class="nav-link sell" href="#uploads">
+                            Uploads
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link sell" href="{{ url_for('sell') }}">
-                            Sell Page
+                        <a class="nav-link sell" href="#purchases">
+                            Purchases
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link sell" href="{{ url_for('logout') }}">
-                            Logout
+                        <a class="nav-link sell" href="#purchased">
+                            Purchased
                         </a>
                     </li>
                 </ul>
             </div>
         </nav>
 
-        <!-- Main Content -->
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+         <!-- Main Content -->   
+         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Welcome, {{ username }}!</h1>
             </div>
@@ -46,114 +46,182 @@
                             <img src="{{ url_for('static', filename='images/profile/' + user.profile_pic) }}" alt="Profile Picture" class="img-thumbnail" width="150">
                         </div>
 
-                           <!-- Bio Section -->
+                        <!-- Editable Profile Info Section -->
                         <div class="col-md-9 sell">
-                            <h5>{{ username }}</h5>
-                            <p class="sell">About me</p>
-
-                            <!-- Display Bio Text -->
-                            <p id="bio-display">{{ user.bio or 'No bio available.' }}</p>
-
-                            <!-- Editable Bio Form (Hidden by Default) -->
-                            <form method="POST" action="{{ url_for('update_bio') }}" id="bio-form" style="display: none;">
+                            <form method="POST" action="{{ url_for('update_profile') }}" enctype="multipart/form-data" id="profile-form" style="display: none;">
+                                <!-- Username Field -->
                                 <div class="form-group">
-                                    <textarea class="form-control" name="bio" rows="4">{{ user.bio or 'Enter your bio here...' }}</textarea>
+                                    <label for="username">Name</label>
+                                    <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
                                 </div>
-                                <button type="submit" class="btn btn-success btn-sm mt-2">Save Bio</button>
+
+                                <!-- Profile Picture Upload -->
+                                <div class="form-group">
+                                    <label for="profile_pic">Profile Picture</label>
+                                    <input type="file" class="form-control-file" id="profile_pic" name="profile_pic">
+                                </div>
+
+                                <!-- Bio Field -->
+                                <div class="form-group">
+                                    <label for="bio">About me</label>
+                                    <textarea class="form-control" id="bio" name="bio" rows="4">{{ user.bio or 'Enter your bio here...' }}</textarea>
+                                </div>
+
+                                <!-- Save Button -->
+                                <button type="submit" class="btn btn-success btn-sm mt-2">Save Changes</button>
                             </form>
 
-                            <!-- Edit Bio Button -->
-                            <button class="btn btn-secondary btn-sm mt-2" id="edit-bio-btn" onclick="toggleBioEdit()"><img src="{{ url_for('static', filename='images/edit.png') }}" alt="Logout Icon" style="width: 15px; height: 15px;margin-top: -2.75px"></button>
+                            <!-- Display Username and Bio -->
+                            <h5>{{ user.username }}</h5>
+                            <p id="bio-display">{{ user.bio | replace("\n", "<br>") | safe }}</p>
+
+                            <!-- Edit Button -->
+                            <button class="btn btn-secondary btn-sm mt-2" id="edit-bio-btn" onclick="toggleProfileEdit()">
+                                <img src="{{ url_for('static', filename='images/edit.png') }}" alt="Edit Icon" style="width: 15px; height: 15px; margin-top: -2.75px">
+                            </button>
                         </div>
                     </div>
                 </div>
-
+            </section>
+            <section class="uploads" id="uploads">
                 <!-- Uploaded Images Section -->
-<div class="mt-4">
-    <h2>Your Uploaded Images:</h2>
-    <div class="row">
-        {% for photo in photos %}
-        <div class="col-md-4 photo-item mb-4">
-            <div class="card dis">
-                <div class="image-container">
-                    <img class="card-img-top" src="{{ url_for('static', filename='images/items/' + photo['selling_img']) }}" alt="Uploaded Image">
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">{{ photo['title'] }}</h5>
-                    <p class="card-text">Genre: {{ photo['genre'] }}</p>
-                    <p class="card-text">Price: ${{ photo['price'] }}</p>
-                    
-                    <!-- Edit Button to toggle the form -->
-                    <button class="btn btn-sm btn-secondary mt-2" onclick="toggleEditForm({{ photo['photo_id'] }})"><img src="{{ url_for('static', filename='images/edit.png') }}" alt="Logout Icon" style="width: 15px; height: 15px; margin-top: -2.75px">
-                    </button>
+                <div class="mt-4">
+                    <h2>Your Uploaded Images:</h2>
+                    <div class="row">
+                        {% for photo in photos %}
+                        <div class="col-md-4 photo-item mb-4">
+                            <div class="card dis">
+                                <div class="image-container">
+                                    <img class="card-img-top" src="{{ url_for('static', filename='images/items/' + photo['selling_img']) }}" alt="Uploaded Image">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ photo['title'] }}</h5>
+                                    <p class="card-text">Genre: {{ photo['genre'] }}</p>
+                                    <p class="card-text">Price: ${{ photo['price'] }}</p>
+                                    
+                                    <!-- Edit Button to toggle the form -->
+                                    <button class="btn btn-sm btn-secondary mt-2" onclick="toggleEditForm({{ photo['photo_id'] }})">
+                                        <img src="{{ url_for('static', filename='images/edit.png') }}" alt="Logout Icon" style="width: 15px; height: 15px; margin-top: -2.75px">
+                                    </button>
 
-                    <!-- Delete Button with Confirmation -->
-                    <form method="POST" action="{{ url_for('delete_photo', photo_id=photo['photo_id']) }}" style="display: inline;">
-                        <button type="submit" class="btn btn-sm btn-danger mt-2" onclick="return confirmDelete();"><img src="{{ url_for('static', filename='images/delete.png') }}" alt="Logout Icon" style="width: 15px; height: 15px; margin-top: -2.75px"></button>
-                    </form>
-                    
-                    <!-- Edit Form (Hidden by Default) -->
-                    <form method="POST" action="{{ url_for('update_photo', photo_id=photo['photo_id']) }}" class="edit-form mt-3" id="edit-form-{{ photo['photo_id'] }}" style="display: none;">
-                        <div class="form-group">
-                            <label for="title-{{ photo['photo_id'] }}">Title</label>
-                            <input type="text" class="form-control" name="title" id="title-{{ photo['photo_id'] }}" value="{{ photo['title'] }}">
+                                    <!-- Delete Button with Confirmation -->
+                                    <form method="POST" action="{{ url_for('delete_photo', photo_id=photo['photo_id']) }}" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger mt-2" onclick="return confirmDelete();"><img src="{{ url_for('static', filename='images/delete.png') }}" alt="Logout Icon" style="width: 15px; height: 15px; margin-top: -2.75px"></button>
+                                    </form>
+                                    
+                                    <!-- Edit Form (Hidden by Default) -->
+                                    <form method="POST" action="{{ url_for('update_photo', photo_id=photo['photo_id']) }}" class="edit-form mt-3" id="edit-form-{{ photo['photo_id'] }}" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="title-{{ photo['photo_id'] }}">Title</label>
+                                            <input type="text" class="form-control" name="title" id="title-{{ photo['photo_id'] }}" value="{{ photo['title'] }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="genre-{{ photo['photo_id'] }}">Genre</label>
+                                            <select id="filterGenre" class="form-control" name="genre" required>
+                                                <option value="">Choose Photo Genre</option>
+                                                <option value="Abstract Photography">Abstract Photography</option>
+                                                <option value="Aerial Photography">Aerial Photography</option>
+                                                <option value="Architectural Photography">Architectural Photography</option>
+                                                <option value="Astrophotography">Astrophotography</option>
+                                                <option value="Black and White Photography">Black and White Photography</option>
+                                                <option value="Conceptual Photography">Conceptual Photography</option>
+                                                <option value="Documentary Photography">Documentary Photography</option>
+                                                <option value="Editorial Photography">Editorial Photography</option>
+                                                <option value="Event Photography">Event Photography</option>
+                                                <option value="Fashion Photography">Fashion Photography</option>
+                                                <option value="Fine Art Photography">Fine Art Photography</option>
+                                                <option value="Food Photography">Food Photography</option>
+                                                <option value="Geometric Photography">Geometric Photography</option>
+                                                <option value="High-Key Photography">High-Key Photography</option>
+                                                <option value="Landscape Photography">Landscape Photography</option>
+                                                <option value="Long Exposure Photography">Long Exposure Photography</option>
+                                                <option value="Low-Key Photography">Low-Key Photography</option>
+                                                <option value="Macro Photography">Macro Photography</option>
+                                                <option value="Minimalist Photography">Minimalist Photography</option>
+                                                <option value="Monochrome Photography">Monochrome Photography</option>
+                                                <option value="Negative Space Photography">Negative Space Photography</option>
+                                                <option value="Portrait Photography">Portrait Photography</option>
+                                                <option value="Product Photography">Product Photography</option>
+                                                <option value="Reflections Photography">Reflections Photography</option>
+                                                <option value="Shadow Photography">Shadow Photography</option>
+                                                <option value="Silhouette Photography">Silhouette Photography</option>
+                                                <option value="Sports Photography">Sports Photography</option>
+                                                <option value="Still Life Photography">Still Life Photography</option>
+                                                <option value="Street Photography">Street Photography</option>
+                                                <option value="Symmetry Photography">Symmetry Photography</option>
+                                                <option value="Texture Photography">Texture Photography</option>
+                                                <option value="Travel Photography">Travel Photography</option>
+                                                <option value="Underwater Photography">Underwater Photography</option>
+                                                <option value="Wildlife Photography">Wildlife Photography</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="price-{{ photo['photo_id'] }}">Price</label>
+                                            <input type="text" class="form-control" name="price" id="price-{{ photo['photo_id'] }}" value="{{ photo['price'] }}">
+                                        </div>
+                                        <br><button type="submit" class="btn btn-success btn-sm">Save Changes</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="genre-{{ photo['photo_id'] }}">Genre</label>
-                            <select id="filterGenre" class="form-control" name="genre" required>
-                                <option value="">Choose Photo Genre</option>
-                                <option value="Abstract Photography">Abstract Photography</option>
-                                <option value="Aerial Photography">Aerial Photography</option>
-                                <option value="Architectural Photography">Architectural Photography</option>
-                                <option value="Astrophotography">Astrophotography</option>
-                                <option value="Black and White Photography">Black and White Photography</option>
-                                <option value="Conceptual Photography">Conceptual Photography</option>
-                                <option value="Documentary Photography">Documentary Photography</option>
-                                <option value="Editorial Photography">Editorial Photography</option>
-                                <option value="Event Photography">Event Photography</option>
-                                <option value="Fashion Photography">Fashion Photography</option>
-                                <option value="Fine Art Photography">Fine Art Photography</option>
-                                <option value="Food Photography">Food Photography</option>
-                                <option value="Geometric Photography">Geometric Photography</option>
-                                <option value="High-Key Photography">High-Key Photography</option>
-                                <option value="Landscape Photography">Landscape Photography</option>
-                                <option value="Long Exposure Photography">Long Exposure Photography</option>
-                                <option value="Low-Key Photography">Low-Key Photography</option>
-                                <option value="Macro Photography">Macro Photography</option>
-                                <option value="Minimalist Photography">Minimalist Photography</option>
-                                <option value="Monochrome Photography">Monochrome Photography</option>
-                                <option value="Negative Space Photography">Negative Space Photography</option>
-                                <option value="Portrait Photography">Portrait Photography</option>
-                                <option value="Product Photography">Product Photography</option>
-                                <option value="Reflections Photography">Reflections Photography</option>
-                                <option value="Shadow Photography">Shadow Photography</option>
-                                <option value="Silhouette Photography">Silhouette Photography</option>
-                                <option value="Sports Photography">Sports Photography</option>
-                                <option value="Still Life Photography">Still Life Photography</option>
-                                <option value="Street Photography">Street Photography</option>
-                                <option value="Symmetry Photography">Symmetry Photography</option>
-                                <option value="Texture Photography">Texture Photography</option>
-                                <option value="Travel Photography">Travel Photography</option>
-                                <option value="Underwater Photography">Underwater Photography</option>
-                                <option value="Wildlife Photography">Wildlife Photography</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="price-{{ photo['photo_id'] }}">Price</label>
-                            <input type="text" class="form-control" name="price" id="price-{{ photo['photo_id'] }}" value="{{ photo['price'] }}">
-                        </div>
-                        <br><button type="submit" class="btn btn-success btn-sm">Save Changes</button>
-                    </form>
+                        {% else %}
+                        <p>No images uploaded yet.</p>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-        </div>
-        {% else %}
-        <p>No images uploaded yet.</p>
-        {% endfor %}
+            </section>
+            <section class="purchases" id="purchases">
+                <!-- Purchased Items Section -->
+                <div class="mt-4">
+                    <h2>Your Purchased Items:</h2>
+                    <div class="row">
+                        {% if purchased_items %}
+                            {% for item in purchased_items %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card dis">
+                                    <img class="card-img-top" src="{{ url_for('static', filename='images/items/' + item['selling_img']) }}" alt="{{ item['title'] }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item['title'] }}</h5>
+                                        <p class="card-text">Genre: {{ item['genre'] }}</p>
+                                        <p class="card-text">Price: ${{ item['price'] }}</p>
+                                        <p class="card-text">Purchased on: {{ item['purchase_date'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <p>You have not purchased any items yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+            <section class="purchased" id="purchased">
+                <!-- Sold Items Section -->
+                <div class="mt-4">
+                    <h2>Your Sold Items:</h2>
+                    <div class="row">
+                        {% if sold_items %}
+                            {% for item in sold_items %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card dis">
+                                    <img class="card-img-top" src="{{ url_for('static', filename='images/items/' + item['selling_img']) }}" alt="{{ item['title'] }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item['title'] }}</h5>
+                                        <p class="card-text">Purchased by: {{ item['purchaser_name'] }}</p>
+                                        <p class="card-text">Purchase Date: {{ item['purchase_date'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <p>No items have been purchased from your uploads yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 </div>
-
-
 <script>
 // Script to Toggle Edit Forms
     function toggleEditForm(photoId) {
@@ -196,10 +264,24 @@
             editButton.style.display = "block";
         }
     }
+
+    // Toggle Profile Edit Mode (for bio, username, and profile picture)
+    function toggleProfileEdit() {
+        var bioDisplay = document.getElementById("bio-display");
+        var profileForm = document.getElementById("profile-form");
+        var editButton = document.getElementById("edit-bio-btn");
+
+        if (profileForm.style.display === "none") {
+            bioDisplay.style.display = "none";
+            profileForm.style.display = "block";
+            editButton.style.display = "none";
+        } else {
+            bioDisplay.style.display = "block";
+            profileForm.style.display = "none";
+            editButton.style.display = "block";
+        }
+    }
 </script>
 
-            </section>
-        </main>
-    </div>
-</div>
+        
 {% endblock %}

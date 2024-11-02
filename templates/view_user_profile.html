@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Profile Picture -->
+            <img src="{{ url_for('static', filename='images/profile/' + user.profile_pic) }}" alt="Profile Picture" class="img-thumbnail" width="150">
+        </div>
+        <div class="col-md-9">
+            <h2>{{ user.username }}'s Profile</h2>
+            <p><strong>Bio:</strong>{{ user.bio | replace("\n", "<br>") | safe }}</p>
+        </div>
+    </div>
+
+    <!-- User's Uploaded Photos -->
+    <div class="mt-4">
+        <h3>{{ user.username }}'s Uploaded Images</h3>
+        <div class="row">
+            {% for photo in photos %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="image-container">
+                        <img class="card-img-top" src="{{ url_for('static', filename='images/items/' + photo['selling_img']) }}" alt="{{ photo['title'] }}">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ photo['title'] }}</h5>
+                        <p class="card-text">Genre: {{ photo['genre'] }}</p>
+                        <p class="card-text">Price: ${{ photo['price'] }}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p>This user has not uploaded any images.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

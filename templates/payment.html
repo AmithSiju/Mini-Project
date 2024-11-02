@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="row no-gutters">
+                    <!-- Item Summary Section -->
+                    <div class="col-md-5 bg-secondary">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ photo.title }}</h5>
+                            <p class="card-text">Genre: {{ photo.genre }}</p>
+                            <p class="card-text">Price: ${{ photo.price }}</p>
+                            <p class="card-text sell">Uploaded by: {{ photo.uploader_name }}</p>
+                            <img src="{{ url_for('static', filename='images/items/' + photo.selling_img) }}" alt="{{ photo.title }}" class="img-fluid mt-3">
+                        </div>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <div class="col-md-7">
+                        <div class="card-body">
+                            <h4 class="card-title">Payment Details</h4>
+                            <p class="sell">Enter your payment information below to complete the purchase.</p>
+                            <hr>
+
+                            <!-- Payment Form -->
+                            <form method="POST" action="{{ url_for('payment_page', photo_id=photo.photo_id) }}">
+                                
+                                <!-- Payment Method Dropdown -->
+                                <div class="form-group">
+                                    <label for="paymentMethod">Payment Method</label>
+                                    <select id="paymentMethod" name="payment_method" class="form-control" required>
+                                        <option value="">Select a payment method</option>
+                                        <option value="Credit Card">Credit Card</option>
+                                        <option value="Debit Card">Debit Card</option>
+                                        <option value="PayPal">PayPal</option>
+                                        <option value="Bank Transfer">Bank Transfer</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="cardNumber">Card Number</label>
+                                    <input type="text" class="form-control" id="cardNumber" name="card_number" placeholder="XXXX XXXX XXXX XXXX" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="expiryDate">Expiry Date</label>
+                                        <input type="text" class="form-control" id="expiryDate" name="expiry_date" placeholder="MM/YY" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="cvv">CVV</label>
+                                        <input type="text" class="form-control" id="cvv" name="cvv" placeholder="XXX" required>
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{{ url_for('buy') }}" class="btn btn-outline-danger">Cancel</a>
+                                    <button type="submit" class="btn btn-outline-success">Confirm Payment</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

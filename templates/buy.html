@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Buy Photographs</h1>
+    <center ><h1 class="gt">Photo Galleria</h1></center><br>
     
     <!-- Search and Filter Section -->
     <form method="GET" action="{{ url_for('buy') }}">
         <div class="row mb-4 align-items-center">
             <!-- Search Box -->
             <div class="col-md-4">
-                <input type="text" id="searchBox" name="search" class="form-control" placeholder="Search by title or uploader..." value="{{ request.args.get('search', '') }}">
+                <input type="text" id="searchBox" name="search" class="form-control text-white" placeholder="Search by title or uploader..." value="{{ request.args.get('search', '') }}">
             </div>
     
             <!-- Genre Filter -->
@@ -33,7 +33,7 @@
             <!-- Apply Filters Button with Image -->
             <div class="col-md-2 text-right">
                 <button type="submit" class="btn btn-secondary">
-                    <img src="{{ url_for('static', filename='images/search.png') }}" alt="Apply Filters" style="width: 24px; height: 24px;">
+                    <img src="{{ url_for('static', filename='images/search.png') }}" alt="Apply Filters" style="width: 24px; height: 22px;">
                 </button>
             </div>
         </div>
@@ -55,8 +55,14 @@
                     <h5 class="card-title">{{ photo.title }}</h5>
                     <p class="card-text">Genre: {{ photo.genre }}</p>
                     <p class="card-text">Price: ${{ photo.price }}</p>
-                    <p class="card-text">Uploaded by: {{ photo.uploader_name }}</p>
-                    <button class="btn btn-secondary">Buy</button>
+                    <!-- Link to the uploader's profile in view mode -->
+                    <p class="card-text sell">Uploaded by: 
+                        <a href="{{ url_for('view_user_profile', user_id=photo.u_id) }}">{{ photo.uploader_name }}</a>
+                    </p>
+                    <!-- "Buy" Button on Buy Page -->
+                    <form method="GET" action="{{ url_for('payment_page', photo_id=photo['photo_id']) }}">
+                        <button type="submit" class="btn btn-secondary">Buy</button>
+                    </form>
                 </div>
             </div>
         </div>
