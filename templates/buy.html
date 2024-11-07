@@ -8,7 +8,7 @@
         <div class="row mb-4 align-items-center">
             <!-- Search Box -->
             <div class="col-md-4">
-                <input type="text" id="searchBox" name="search" class="form-control text-white" placeholder="Search by title or uploader..." value="{{ request.args.get('search', '') }}">
+                <input type="text" id="searchBox" name="search" class="form-control" placeholder="Search by title or uploader..." value="{{ request.args.get('search', '') }}">
             </div>
     
             <!-- Genre Filter -->
@@ -50,11 +50,12 @@
              data-genre="{{ photo.genre }}" 
              data-price="{{ photo.price }}">
             <div class="card mb-4 shadow-sm bg-black text-white">
-                <img src="{{ url_for('static', filename='images/items/' + photo.selling_img) }}" class="card-img-top img-thumbnail" alt="{{ photo.title }}">
+                <img src="{{ url_for('static', filename='images/items/' + photo.selling_img) }}" 
+                class="card-img-topp img-thumbnail" alt="{{ photo.title }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ photo.title }}</h5>
                     <p class="card-text">Genre: {{ photo.genre }}</p>
-                    <p class="card-text">Price: ${{ photo.price }}</p>
+                    <p class="card-text">Price: ₹{{ photo.price }}</p>
                     <!-- Link to the uploader's profile in view mode -->
                     <p class="card-text sell">Uploaded by: 
                         <a href="{{ url_for('view_user_profile', user_id=photo.u_id) }}">{{ photo.uploader_name }}</a>

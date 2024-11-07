@@ -4,8 +4,8 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav id="sidebar" class="col-md-2 d-none d-md-block bg-secondary sidebar">
-            <div class="sidebar-sticky">
+        <nav id="sidebar" class="col-md-2 d-none d-md-block bg-secondary sidebar" style="position: fixed; height:calc(100vh - 50px); top: 60px;left: 0; width: 160px; font-size: 1.1em;">
+            <div class="sidebar-override">
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link active sell" href="#about" >
@@ -19,12 +19,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link sell" href="#purchases">
-                            Purchases
+                            Purchased
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link sell" href="#purchased">
-                            Purchased
+                            Sold
                         </a>
                     </li>
                 </ul>
@@ -32,7 +32,7 @@
         </nav>
 
          <!-- Main Content -->   
-         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 offset-md-2">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Welcome, {{ username }}!</h1>
             </div>
@@ -86,7 +86,7 @@
             <section class="uploads" id="uploads">
                 <!-- Uploaded Images Section -->
                 <div class="mt-4">
-                    <h2>Your Uploaded Images:</h2>
+                    <h2>Uploaded Images:</h2>
                     <div class="row">
                         {% for photo in photos %}
                         <div class="col-md-4 photo-item mb-4">
@@ -97,7 +97,7 @@
                                 <div class="card-body">
                                     <h5 class="card-title">{{ photo['title'] }}</h5>
                                     <p class="card-text">Genre: {{ photo['genre'] }}</p>
-                                    <p class="card-text">Price: ${{ photo['price'] }}</p>
+                                    <p class="card-text">Price: ₹{{ photo['price'] }}</p>
                                     
                                     <!-- Edit Button to toggle the form -->
                                     <button class="btn btn-sm btn-secondary mt-2" onclick="toggleEditForm({{ photo['photo_id'] }})">
@@ -173,7 +173,7 @@
             <section class="purchases" id="purchases">
                 <!-- Purchased Items Section -->
                 <div class="mt-4">
-                    <h2>Your Purchased Items:</h2>
+                    <h2>Purchased Images:</h2>
                     <div class="row">
                         {% if purchased_items %}
                             {% for item in purchased_items %}
@@ -183,7 +183,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{ item['title'] }}</h5>
                                         <p class="card-text">Genre: {{ item['genre'] }}</p>
-                                        <p class="card-text">Price: ${{ item['price'] }}</p>
+                                        <p class="card-text">Price: ₹{{ item['price'] }}</p>
                                         <p class="card-text">Purchased on: {{ item['purchase_date'] }}</p>
                                     </div>
                                 </div>
@@ -198,7 +198,7 @@
             <section class="purchased" id="purchased">
                 <!-- Sold Items Section -->
                 <div class="mt-4">
-                    <h2>Your Sold Items:</h2>
+                    <h2>Sold Images:</h2>
                     <div class="row">
                         {% if sold_items %}
                             {% for item in sold_items %}

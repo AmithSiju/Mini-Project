@@ -1,5 +1,3 @@
-from datetime import datetime
-
 @app.route('/payment/<int:photo_id>', methods=['GET', 'POST'])
 def payment_page(photo_id):
     if 'user_id' in session:
@@ -22,6 +20,9 @@ def payment_page(photo_id):
                 'INSERT INTO purchases (user_id, photo_id, price, payment_method, purchase_date) VALUES (?, ?, ?, ?, ?)',
                 (session['user_id'], photo_id, photo['price'], payment_method, datetime.now())
             )
+            
+            # Mark the item as sold in the photos table
+            conn.execute('UPDATE photos SET sold = 1 WHERE photo_id = ?', (photo_id,))
             conn.commit()
             conn.close()
             
@@ -34,7 +35,3 @@ def payment_page(photo_id):
         return render_template('payment.html', photo=photo)
     
     return redirect(url_for('login'))
-
-@app.route('/transaction_success')
-def transaction_success():
-    return render_template('transaction_success.html')

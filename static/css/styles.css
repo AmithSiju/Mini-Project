@@ -83,3 +83,7 @@ body {
     border-bottom: .3em solid #f3f5f4;
     border-right: .3em solid #f3f5f4;
 }
+    /* Adjust opacity of images on the Buy page */
+    .card-img-topp {
+        filter: blur(1px);
+    }
